@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.reactivestreams.Publisher;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -68,5 +67,20 @@ public class VendorControllerTest {
                 .exchange()
                 .expectStatus()
                 .isCreated();
+    }
+
+    @Test
+    public void testUpdateCustomer() {
+        BDDMockito.given(vendorRepository.save(any(Vendor.class)))
+                .willReturn(Mono.just(Vendor.builder().build()));
+
+        Mono<Vendor> catToUpdateMono = Mono.just(Vendor.builder().firstName("Name").build());
+
+        webTestClient.put()
+                .uri("/api/v1/vendors/asdfasdf")
+                .body(catToUpdateMono, Vendor.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
     }
 }
